@@ -1,0 +1,27 @@
+[package]
+name = "dapp"
+version = "3.0.1"
+authors = ["Chris Taylor chris@prosopo.io"]
+edition = "2021"
+
+[dependencies]
+ink = { git = "https://github.com/prosopo/ink", rev="bec5105fb79926377341179389336fcac620c50d", default-features = false }
+scale = { package = "parity-scale-codec", version = "3", default-features = false, features = ["derive"] }
+scale-info = { version = "2.3", default-features = false, features = ["derive"], optional = true }
+
+[lib]
+name = "dapp"
+path = "lib.rs"
+crate-type = [
+    # Used for normal contract Wasm blobs.
+    "cdylib",
+    "rlib"
+]
+# Needed until https://github.com/paritytech/ink/issues/364 is resolved.
+[profile.release]
+overflow-checks = false
+
+[features]
+default = ["std"]
+std = ["ink/std", "scale/std", "scale-info/std"]
+ink-as-dependency = []
