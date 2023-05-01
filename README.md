@@ -1,5 +1,8 @@
 # Investigation into tx fees in ink! smart contracts
 
+Repo demonstrating fees being taken for adding storage to a contract and subsequently being refunded when the contract 
+is terminated.
+
 ## Prerequisites
 
 ### Substrate node running on local machine
