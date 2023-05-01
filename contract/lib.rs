@@ -80,29 +80,33 @@ pub mod dapp {
         pub fn faucet(&mut self, accountid: AccountId) -> Result<(), Error> {
             let token_holder = self.token_holder;
             self.transfer_from_to(&token_holder, &accountid, self.faucet_amount)?;
+            self.record_transfer(token_holder, accountid, self.faucet_amount);
+
             Ok(())
         }
 
         /// Faucet function for sending tokens to humans that includes a call to another function
         #[ink(message)]
-        pub fn faucet_with_subcall(&mut self, accountid: AccountId) -> Result<(), Error> {
+        pub fn faucet_with_store(&mut self, accountid: AccountId) -> Result<(), Error> {
             let token_holder = self.token_holder;
             self.transfer_from_to(&token_holder, &accountid, self.faucet_amount)?;
             // record transfer or return error
-            match self.record_transfer(Transfer {
-                from: token_holder,
-                to: accountid,
-                value: self.faucet_amount,
-            }) {
-                Ok(_) => Ok(()),
-                Err(_) => Err(Error::RecordTransferFailed),
-            }
+            self.transfers
+                .push(Transfer{from: token_holder, to: accountid, value: self.faucet_amount});
+            ink::env::debug_println!("From {:?} To {:?} Timestamp {:?}", &token_holder, &accountid, self.env().block_timestamp());
+            Ok(())
         }
 
         /// Sub call
         #[ink(message)]
-        pub fn record_transfer(&mut self, transfer: Transfer) -> Result<(), Error> {
-            self.transfers.push(transfer);
+        pub fn record_transfer(
+            &mut self,
+            from: AccountId,
+            to: AccountId,
+            value: Balance,
+        ) -> Result<(), Error> {
+            self.transfers.push(Transfer{from, to, value});
+            ink::env::debug_println!("From {:?} To {:?} Timestamp {:?}", from, to, self.env().block_timestamp());
             Ok(())
         }
 
@@ -164,6 +168,12 @@ pub mod dapp {
         #[inline]
         fn balance_of_impl(&self, owner: &AccountId) -> Balance {
             self.balances.get(owner).unwrap_or_default()
+        }
+
+        /// Terminates the contract and transfers the remaining balance to the recipient.
+        #[ink(message)]
+        pub fn terminate(&self, recipient: AccountId) {
+            ink::env::terminate_contract::<ink::env::DefaultEnvironment>(recipient);
         }
     }
 }

@@ -59,10 +59,11 @@ class Batcher extends ContractPromise {
     }
 
     async runBatch(extrinsic: SubmittableExtrinsic): Promise<void> {
-        const extrinsics = [extrinsic]
+        const extrinsics: SubmittableExtrinsic[] = []
         // get the extrinsics that are to be batched
-        for (const x of Array(1).keys()) {
+        for (const x of [0]) {
             extrinsics.push(extrinsic)
+            console.log("extrinsics length", extrinsics.length)
         }
         // commit and get the Ids of the commitments that were committed on-chain
         await batch(this, this.pair, extrinsics, this.logger)
@@ -231,18 +232,18 @@ async function run() {
         console.log(`Balance before: ${balanceBefore.div(unit)} UNIT, Balance after: ${balanceAfter.div(unit)} UNIT`)
         console.warn(`\nTx Cost: ${balanceBefore.sub(balanceAfter).div(unit)} UNIT for extrinsic without sub call\n`)
 
-        // Check the price for a tx with a sub call inside a batch
-        balanceBefore = (await api.query.system.account(pair.address)).data.free
-        await batcher.runBatch(extrinsicWithoutSubcall)
-        balanceAfter = (await api.query.system.account(pair.address)).data.free
-        console.log(`Balance before: ${balanceBefore.div(unit)} UNIT, Balance after: ${balanceAfter.div(unit)} UNIT`)
-        console.warn(
-            `\nTx Cost: ${balanceBefore.sub(balanceAfter).div(unit)} UNIT for extrinsic without sub call in batch\n`
-        )
+        // // Check the price for a tx with a sub call inside a batch
+        // balanceBefore = (await api.query.system.account(pair.address)).data.free
+        // await batcher.runBatch(extrinsicWithoutSubcall)
+        // balanceAfter = (await api.query.system.account(pair.address)).data.free
+        // console.log(`Balance before: ${balanceBefore.div(unit)} UNIT, Balance after: ${balanceAfter.div(unit)} UNIT`)
+        // console.warn(
+        //     `\nTx Cost: ${balanceBefore.sub(balanceAfter).div(unit)} UNIT for extrinsic without sub call in batch\n`
+        // )
     }
 
     // Check the price for a tx with a sub call, in and outside a batch
-    const { extrinsic: extrinsicWithSubcall } = await batcher.getExtrinsic('faucetWithSubcall')
+    const { extrinsic: extrinsicWithSubcall } = await batcher.getExtrinsic('faucetWithStore')
     if (extrinsicWithSubcall) {
         let balanceBefore = (await api.query.system.account(pair.address)).data.free
         await batcher.runCall(extrinsicWithSubcall)
@@ -250,15 +251,23 @@ async function run() {
         console.log(`Balance before: ${balanceBefore.div(unit)} UNIT, Balance after: ${balanceAfter.div(unit)} UNIT`)
         console.warn(`\nTx Cost: ${balanceBefore.sub(balanceAfter).div(unit)} UNIT for extrinsic with sub call\n`)
 
-        // Check the price for a tx with a sub call inside a batch
-        balanceBefore = (await api.query.system.account(pair.address)).data.free
-        await batcher.runBatch(extrinsicWithSubcall)
-        balanceAfter = (await api.query.system.account(pair.address)).data.free
-        console.log(`Balance before: ${balanceBefore.div(unit)} UNIT, Balance after: ${balanceAfter.div(unit)} UNIT`)
-        console.warn(
-            `\nTx Cost: ${balanceBefore.sub(balanceAfter).div(unit)} UNIT for extrinsic with sub call in batch\n`
-        )
+        // // Check the price for a tx with a sub call inside a batch
+        // balanceBefore = (await api.query.system.account(pair.address)).data.free
+        // await batcher.runBatch(extrinsicWithSubcall)
+        // balanceAfter = (await api.query.system.account(pair.address)).data.free
+        // console.log(`Balance before: ${balanceBefore.div(unit)} UNIT, Balance after: ${balanceAfter.div(unit)} UNIT`)
+        // console.warn(
+        //     `\nTx Cost: ${balanceBefore.sub(balanceAfter).div(unit)} UNIT for extrinsic with sub call in batch\n`
+        // )
     }
+
+    // terminate the contract
+    const { extrinsic: extrinsicTerminate } = await batcher.getExtrinsic('terminate')
+    let balanceBefore = (await api.query.system.account(pair.address)).data.free
+    await batcher.runCall(extrinsicTerminate)
+    let balanceAfter = (await api.query.system.account(pair.address)).data.free
+    console.log(`Balance before: ${balanceBefore.div(unit)} UNIT, Balance after: ${balanceAfter.div(unit)} UNIT`)
+    console.warn(`\nTx Cost: ${balanceBefore.sub(balanceAfter).div(unit)} UNIT for terminate extrinsic\n`)
 }
 
 if (typeof require !== 'undefined' && require.main === module) {
