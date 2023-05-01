@@ -46,31 +46,27 @@ npm run tx
 ```
 
 > Sending address:  5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty
-Payment Info:  1.9141 Unit
-faucet response.storageDeposit { Charge: '0' }
-Block number 52135
-Balance before: 988072951 UNIT, Balance after: 988072949 UNIT
-> 
-> Tx Cost: **1 UNIT** for extrinsic **without sub call**
+Payment Info:  1.9845 Unit
+faucet response.storageDeposit { Charge: '480.0000 Unit' }
+Block number 13886
+Balance before: 995284288 UNIT, Balance after: 995283806 UNIT
 >
-> Payment Info 2.7895 Unit
-Block number 52136
-Balance before: 988072949 UNIT, Balance after: 988072947 UNIT
->
-> Tx Cost: **2 UNIT** for extrinsic **without sub call in batch**
+> Tx Cost: 481 UNIT for extrinsic without sub call
 >
 > Sending address:  5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty
-Payment Info:  1.9841 Unit
-faucetWithSubcall response.storageDeposit { Charge: '480.0000 Unit' }
-Block number 52137
-Balance before: 988072947 UNIT, Balance after: 988072465 UNIT
+Payment Info:  1.9845 Unit
+faucetWithStore response.storageDeposit { Charge: '480.0000 Unit' }
+Block number 13887
+Balance before: 995283806 UNIT, Balance after: 995283324 UNIT
 >
-> Tx Cost: **481 UNIT** for **extrinsic with sub call**
+> Tx Cost: 481 UNIT for extrinsic with sub call
 >
-> Payment Info 2.7895 Unit
-Block number 52135
-Block number 52138
-Balance before: 988072465 UNIT, Balance after: 988071502 UNIT
+> Sending address:  5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty
+Payment Info:  1.9845 Unit
+terminate response.storageDeposit { Refund: '2.4090 kUnit' }
+Block number 13888
+Balance before: 995283324 UNIT, Balance after: 995285832 UNIT
 >
-> Tx Cost: **962 UNIT** for extrinsic **with sub call in batch**`
+> Tx Cost: -2507 UNIT for terminate extrinsic
+
 
